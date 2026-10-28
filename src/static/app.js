@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ==========================================================
 function initMap() {
   // Center of Manta (between Tarqui, Jocay, and Malecón)
-  const mantaCenter = [-0.956, -80.718];
+  const mantaCenter = [-0.954, -80.715];
   map = L.map("mantaMap", {
     center: mantaCenter,
     zoom: 14,
@@ -52,7 +52,6 @@ function initMap() {
     subdomains: ["a", "b", "c"],
     maxZoom: 19
   }).addTo(map);
-
 
   // Initialize Layer Groups
   streetsLayerGroup = L.layerGroup().addTo(map);
@@ -88,33 +87,34 @@ function renderGraphStreets(data) {
     const v = nodeMap[edge.destino];
     if (!u || !v) return;
 
-    // Color by street type
-    let color = "#475569";
-    let weight = 2;
-    let opacity = 0.5;
+    // Google Maps style hierarchy: Avenidas, Calles, Puentes
+    let color = "#64748b";
+    let weight = 2.0;
+    let opacity = 0.65;
 
     if (edge.tipo === "avenida") {
-      color = "#00f2fe";
-      weight = 3;
-      opacity = 0.7;
+      color = "#38bdf8";
+      weight = 3.5;
+      opacity = 0.9;
     } else if (edge.tipo === "puente") {
       color = "#f59e0b";
-      weight = 4;
-      opacity = 0.85;
+      weight = 5.0;
+      opacity = 0.95;
     } else if (edge.tipo === "callejon") {
-      color = "#334155";
-      weight = 1.2;
-      opacity = 0.4;
+      color = "#475569";
+      weight = 1.4;
+      opacity = 0.5;
     }
 
     const poly = L.polyline([[u.lat, u.lng], [v.lat, v.lng]], {
       color: color,
       weight: weight,
       opacity: opacity,
-      smoothFactor: 1
+      lineCap: "round",
+      lineJoin: "round"
     });
 
-    poly.bindTooltip(`<b>${edge.nombre}</b><br>Tipo: ${edge.tipo} | ${edge.distancia_m}m`, {
+    poly.bindTooltip(`<b>${edge.nombre}</b><br>Tipo: ${edge.tipo.toUpperCase()} · ${edge.distancia_m} m`, {
       sticky: true,
       className: "street-tooltip"
     });
@@ -430,7 +430,7 @@ function refreshInspector() {
   graphData.nodos.forEach(n => { nodeMap[n.id] = n; });
   const currNode = nodeMap[s.nodo];
 
-  // Draw escape polyline trail on map
+  // Draw Google Maps style GPS navigation polyline trail
   routePolylineLayer.clearLayers();
   if (s.ruta_planificada && s.ruta_planificada.length > 1) {
     const latlngs = s.ruta_planificada
@@ -438,13 +438,24 @@ function refreshInspector() {
       .filter(Boolean)
       .map(n => [n.lat, n.lng]);
 
-    const poly = L.polyline(latlngs, {
-      color: "#00f2fe",
-      weight: 4,
-      opacity: 0.9,
-      dashArray: "6, 6"
+    // Outer glow casing (Google Maps route border)
+    const polyBorder = L.polyline(latlngs, {
+      color: "#0369a1",
+      weight: 8,
+      opacity: 0.7,
+      lineCap: "round",
+      lineJoin: "round"
     });
-    routePolylineLayer.addLayer(poly);
+    // Inner vibrant GPS route line
+    const polyLine = L.polyline(latlngs, {
+      color: "#00f2fe",
+      weight: 5,
+      opacity: 1.0,
+      lineCap: "round",
+      lineJoin: "round"
+    });
+    routePolylineLayer.addLayer(polyBorder);
+    routePolylineLayer.addLayer(polyLine);
   }
 
   container.innerHTML = `
