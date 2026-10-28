@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escape de Manta Zombie | Radio Resistencia 104.5 FM - Spookython 2026</title>
+  <meta name="description" content="Centro de comando y motor de enrutamiento en tiempo real para evacuación en Manta ante infestación zombie. Track A - Spookython 2026.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation / Status Header -->
+  <header class="app-header" id="appHeader">
+    <div class="header-brand">
+      <div class="radio-signal-icon">
+        <span class="signal-dot"></span>
+        <span class="signal-wave wave-1"></span>
+        <span class="signal-wave wave-2"></span>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">RADIO RESISTENCIA MANTA <span class="frequency-tag">104.5 FM</span></div>
+        <div class="brand-subtitle">CENTRO DE EVACUACIÓN Y MOTOR DE RUTAS EN TIEMPO REAL · SPOOKYTHON 2026</div>
+      </div>
+    </div>
+
+    <!-- Fire Test Round Selection Bar -->
+    <div class="round-selector-container">
+      <span class="selector-label">PRUEBA DE FUEGO:</span>
+      <div class="round-btn-group">
+        <button id="btnRonda1" class="round-btn active" onclick="seleccionarRonda(1)">
+          <span class="r-num">R1</span>
+          <span class="r-name">Anochecer (20)</span>
+        </button>
+        <button id="btnRonda2" class="round-btn" onclick="seleccionarRonda(2)">
+          <span class="r-num">R2</span>
+          <span class="r-name">Medianoche (80)</span>
+        </button>
+        <button id="btnRonda3" class="round-btn" onclick="seleccionarRonda(3)">
+          <span class="r-num">R3</span>
+          <span class="r-name">Apocalipsis (200)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Controls -->
+    <div class="header-controls">
+      <button id="btnPlayPausa" class="ctrl-btn play-btn" onclick="togglePlayPausa()">
+        <span id="playIcon">▶</span> <span id="playText">INICIAR</span>
+      </button>
+      <button id="btnStep" class="ctrl-btn step-btn" onclick="ejecutarPaso()" title="Avanzar 1 turno">
+        <span>⏭</span> PASO
+      </button>
+      <button id="btnReiniciar" class="ctrl-btn reset-btn" onclick="reiniciarSimulacion()" title="Reiniciar ronda actual">
+        <span>🔄</span> REINICIAR
+      </button>
+      
+      <div class="speed-control">
+        <label for="selectVelocidad">VELOCIDAD:</label>
+        <select id="selectVelocidad" onchange="cambiarVelocidad(this.value)">
+          <option value="2.0">Normal (2.0s)</option>
+          <option value="1.0">Rápido (1.0s)</option>
+          <option value="0.5" selected>Turbocarga (0.5s)</option>
+          <option value="0.2">Ultra (0.2s)</option>
+        </select>
+      </div>
+
+      <button id="btnAudioMute" class="ctrl-btn audio-btn" onclick="toggleAudio()" title="Activar/Desactivar Radio SFX">
+        <span id="audioIcon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main KPI Status Ribbon -->
+  <section class="kpi-ribbon" id="kpiRibbon">
+    <div class="kpi-card" id="kpiSupervivenciaCard">
+      <div class="kpi-icon">🛡️</div>
+      <div class="kpi-data">
+        <div class="kpi-value" id="kpiSupervivencia">100.0%</div>
+        <div class="kpi-label">TASA SUPERVIVENCIA</div>
+      </div>
+      <div class="kpi-mini-bar">
+        <div class="kpi-fill-bar" id="kpiSupervivenciaBar" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpiSobrevivientesCard">
+      <div class="kpi-icon">🏃</div>
+      <div class="kpi-data">
+        <div class="kpi-value"><span id="kpiVivos" class="c-cyan">0</span> / <span id="kpiTotal">0</span></div>
+        <div class="kpi-label">EN RUTA HACIA REFUGIO</div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpiRescatadosCard">
+      <div class="kpi-icon">🟢</div>
+      <div class="kpi-data">
+        <div class="kpi-value c-green" id="kpiRescatados">0</div>
+        <div class="kpi-label">A SALVO EN REFUGIOS</div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpiMordidosCard">
+      <div class="kpi-icon">💀</div>
+      <div class="kpi-data">
+        <div class="kpi-value c-red" id="kpiMordidos">0</div>
+        <div class="kpi-label">BAJAS REPORTADAS</div>
+      </div>
+    </div>
+
+    <div class="kpi-card" id="kpiLatenciaCard">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-data">
+        <div class="kpi-value c-gold"><span id="kpiLatenciaP95">0.0</span> <small>ms</small></div>
+        <div class="kpi-label">LATENCIA P95 (POST /paso)</div>
+      </div>
+      <span class="badge-gold">ORO &lt;150ms</span>
+    </div>
+
+    <div class="kpi-card" id="kpiTurnoCard">
+      <div class="kpi-icon">⏱️</div>
+      <div class="kpi-data">
+        <div class="kpi-value" id="kpiTurno">0</div>
+        <div class="kpi-label">TURNO ACTUAL</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Viewport: Map & Side Panels -->
+  <main class="main-viewport">
+    <!-- Map Container -->
+    <div class="map-wrapper">
+      <div id="mantaMap" class="leaflet-container"></div>
+      
+      <!-- Map Legend Overlay -->
+      <div class="map-legend-overlay" id="mapLegend">
+        <div class="legend-header">LEYENDA TÁCTICA</div>
+        <div class="legend-grid">
+          <div class="legend-item"><span class="leg-icon leg-ref">🛡️</span> Refugio Seguro</div>
+          <div class="legend-item"><span class="leg-icon leg-surv">👤</span> Sobreviviente</div>
+          <div class="legend-item"><span class="leg-icon leg-walk">🧟</span> Caminante (1c/2t)</div>
+          <div class="legend-item"><span class="leg-icon leg-run">⚡</span> Corredor (2c/t)</div>
+          <div class="legend-item"><span class="leg-icon leg-hord">☣️</span> Horda (Bloqueo Vecinos)</div>
+          <div class="legend-item"><span class="leg-icon leg-sleep">💤</span> Dormido (Despierta &lt;2c)</div>
+          <div class="legend-item"><span class="leg-icon leg-van">🚐</span> Camioneta Rescate (PRO)</div>
+          <div class="legend-item"><span class="leg-icon leg-block">⛔</span> Calle/Puente Colapsado</div>
+        </div>
+      </div>
+
+      <!-- Live Broadcast Alert Banner (overlay on map) -->
+      <div class="live-broadcast-banner" id="liveAlertBanner" style="display: none;">
+        <span class="alert-icon">🚨</span>
+        <span class="alert-message" id="alertMessageText">EMERGENCIA EN CURSO</span>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Radio Transmissions & Entity Telemetry -->
+    <aside class="sidebar-panel" id="sidebarPanel">
+      <!-- Section 1: Emergency Radio Broadcast & Audio Wave -->
+      <div class="sidebar-box radio-box">
+        <div class="box-header">
+          <span class="box-title">📻 TRANSMISIÓN DE RADIO EN VIVO</span>
+          <span class="radio-freq-badge">104.5 MHz</span>
+        </div>
+        <div class="audio-freq-bars">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+        <div class="radio-log-container" id="radioLogContainer">
+          <div class="radio-log-entry intro-entry">
+            <span class="log-time">[RADIO]</span>
+            <span class="log-text">Iniciando frecuencia de emergencia de Manta... Transmitiendo rutas seguras a todos los sobrevivientes.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Refuges Status & Capacity (Nivel PRO Balancing) -->
+      <div class="sidebar-box refugios-box">
+        <div class="box-header">
+          <span class="box-title">🏰 ESTADO DE REFUGIOS</span>
+          <span class="badge-pro">PRO: BALANCEO ACTIVO</span>
+        </div>
+        <div class="refugios-list" id="refugiosListContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Section 3: Entity Telemetry Inspector -->
+      <div class="sidebar-box telemetry-box">
+        <div class="box-header">
+          <span class="box-title">📡 INSPECTOR TELEMÉTRICO</span>
+          <span class="inspector-hint">Haz clic en cualquier nodo o sobreviviente</span>
+        </div>
+        <div class="inspector-content" id="inspectorContent">
+          <div class="empty-inspector">
+            <div class="inspect-icon">🎯</div>
+            <p>Selecciona un sobreviviente o zombie en el mapa para inspeccionar su ruta, proximidad de amenazas y algoritmo de escape.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Architecture & AWS Readiness -->
+      <div class="sidebar-box aws-box">
+        <div class="box-header">
+          <span class="box-title">☁️ ESTADO EN AWS &amp; CONTRATO</span>
+          <span class="badge-ready">LISTO 10/10</span>
+        </div>
+        <div class="aws-info-grid">
+          <div class="aws-info-item">
+            <span class="info-k">Endpoint:</span>
+            <span class="info-v code-text">POST /paso</span>
+          </div>
+          <div class="aws-info-item">
+            <span class="info-k">Auth Header:</span>
+            <span class="info-v code-text">x-api-key: ********</span>
+          </div>
+          <div class="aws-info-item">
+            <span class="info-k">Latencia P95:</span>
+            <span class="info-v c-green">&lt; 3.0 ms (&lt;150ms ORO)</span>
+          </div>
+          <div class="aws-info-item">
+            <span class="info-k">Disponibilidad:</span>
+            <span class="info-v c-green">100.0% (&lt;0.5% error)</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Web Application JS -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
