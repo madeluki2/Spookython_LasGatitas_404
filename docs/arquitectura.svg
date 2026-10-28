@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="100%" height="100%" style="background-color: #07090e; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#4facfe"/>
+    </linearGradient>
+    <linearGradient id="neonGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="neonAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="neonPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+    <linearGradient id="neonRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    
+    <!-- Filter for Glow Effects -->
+    <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Title & Metadata -->
+  <text x="40" y="45" fill="#ffffff" font-size="22" font-weight="800" letter-spacing="1">ARQUITECTURA CLOUD AWS · ESCAPE DE MANTA ZOMBIE</text>
+  <text x="40" y="70" fill="#94a3b8" font-size="13">Track A - Spookython 2026 | Enrutamiento en Tiempo Real de Alta Concurrencia y Baja Latencia (&lt;3ms)</text>
+
+  <!-- AWS Cloud Boundary -->
+  <rect x="220" y="100" width="840" height="560" rx="16" fill="url(#cloudGrad)" stroke="#00f2fe" stroke-width="2" stroke-dasharray="8 6" opacity="0.95"/>
+  <text x="245" y="135" fill="#38bdf8" font-size="16" font-weight="700">☁️ Amazon Web Services (AWS Cloud - Region: us-east-1)</text>
+
+  <!-- Public vs Private Divider -->
+  <line x1="560" y1="160" x2="560" y2="630" stroke="#334155" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="360" y="170" fill="#64748b" font-size="12" font-weight="600" text-anchor="middle">ZONA PÚBLICA (Edge &amp; Ingress)</text>
+  <text x="810" y="170" fill="#64748b" font-size="12" font-weight="600" text-anchor="middle">ZONA PRIVADA (Compute &amp; State)</text>
+
+  <!-- CLIENTS (Left outside AWS) -->
+  <g transform="translate(30, 280)">
+    <rect width="150" height="150" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="75" y="40" fill="#ffffff" font-size="28" text-anchor="middle">🏃🧟</text>
+    <text x="75" y="70" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Simulador &amp;</text>
+    <text x="75" y="90" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Sobrevivientes</text>
+    <text x="75" y="115" fill="#94a3b8" font-size="10" text-anchor="middle">200 Clientes en Manta</text>
+    <text x="75" y="130" fill="#38bdf8" font-size="10" font-weight="600" text-anchor="middle">Cada 2 segundos</text>
+  </g>
+
+  <!-- FLOW: Clients -> API Gateway -->
+  <path d="M 180 355 L 260 355" stroke="#00f2fe" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <text x="220" y="340" fill="#00f2fe" font-size="11" font-weight="700" text-anchor="middle">POST /paso</text>
+  <text x="220" y="375" fill="#94a3b8" font-size="9" text-anchor="middle">x-api-key</text>
+
+  <!-- 1. Amazon API Gateway -->
+  <g transform="translate(260, 270)">
+    <rect width="240" height="170" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="0" y="0" width="240" height="34" rx="12" fill="url(#neonAmber)"/>
+    <text x="120" y="22" fill="#07090e" font-size="12" font-weight="800" text-anchor="middle">AMAZON API GATEWAY</text>
+    <text x="15" y="60" fill="#f8fafc" font-size="11" font-weight="600">• HTTP API v2 (Baja Latencia)</text>
+    <text x="15" y="82" fill="#f8fafc" font-size="11" font-weight="600">• Autenticación x-api-key</text>
+    <text x="15" y="104" fill="#f8fafc" font-size="11" font-weight="600">• Throttling: 10,000 req/s</text>
+    <text x="15" y="126" fill="#f8fafc" font-size="11" font-weight="600">• WebSocket /ws Streaming</text>
+    <rect x="15" y="138" width="100" height="20" rx="4" fill="#f59e0b" opacity="0.2"/>
+    <text x="65" y="152" fill="#fbbf24" font-size="9" font-weight="700" text-anchor="middle">SSL Term &lt;10ms</text>
+  </g>
+
+  <!-- 2. Amazon S3 & CloudFront (Top Public) -->
+  <g transform="translate(260, 190)">
+    <rect width="240" height="65" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="120" y="26" fill="#60a5fa" font-size="12" font-weight="700" text-anchor="middle">🌐 S3 + CloudFront CDN</text>
+    <text x="120" y="48" fill="#94a3b8" font-size="10" text-anchor="middle">Hosting Live Map Dashboard &amp; Assets</text>
+  </g>
+
+  <!-- FLOW: API Gateway -> Compute -->
+  <path d="M 500 355 L 610 355" stroke="#10b981" stroke-width="3" fill="none"/>
+  <text x="555" y="340" fill="#10b981" font-size="11" font-weight="700" text-anchor="middle">&lt;1ms Local VPC</text>
+
+  <!-- 3. COMPUTE LAYER: App Runner / ECS Container -->
+  <g transform="translate(610, 240)">
+    <rect width="390" height="230" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="2.5" filter="url(#glowCyan)"/>
+    <rect x="0" y="0" width="390" height="38" rx="14" fill="url(#neonGreen)"/>
+    <text x="195" y="24" fill="#07090e" font-size="13" font-weight="800" text-anchor="middle">AWS APP RUNNER / ECS FARGATE (FASTAPI)</text>
+    
+    <text x="20" y="70" fill="#38bdf8" font-size="12" font-weight="700">MOTOR DE RUTAS DINÁMICO (A* EN MEMORIA):</text>
+    <text x="20" y="92" fill="#f8fafc" font-size="11">• 360 Nodos de Manta, 768 Calles y 4 Refugios Seguros</text>
+    <text x="20" y="112" fill="#f8fafc" font-size="11">• Evasión de Hordas: Bloqueo de nodo central Y TODOS sus vecinos</text>
+    <text x="20" y="132" fill="#f8fafc" font-size="11">• Predicción de Corredores (Nivel PRO): Evaluación de radio 2 saltos</text>
+    <text x="20" y="152" fill="#f8fafc" font-size="11">• Balanceo de Capacidad (Nivel PRO): Reparto dinámico de refugios</text>
+    <text x="20" y="172" fill="#f8fafc" font-size="11">• Flota de Rescate (Nivel PRO): 5 camionetas doble velocidad</text>
+    
+    <!-- Latency Badge -->
+    <rect x="20" y="188" width="180" height="28" rx="6" fill="#10b981" opacity="0.2" stroke="#10b981"/>
+    <text x="110" y="206" fill="#34d399" font-size="11" font-weight="800" text-anchor="middle">⚡ LATENCIA P95: 2.2 ms</text>
+    
+    <rect x="215" y="188" width="155" height="28" rx="6" fill="#fbbf24" opacity="0.2" stroke="#fbbf24"/>
+    <text x="292" y="206" fill="#fbbf24" font-size="11" font-weight="800" text-anchor="middle">🏆 ORO (&lt;150ms)</text>
+  </g>
+
+  <!-- 4. Amazon DynamoDB / ElastiCache (State Store) -->
+  <g transform="translate(610, 500)">
+    <rect width="230" height="120" rx="10" fill="#1e293b" stroke="#c084fc" stroke-width="2"/>
+    <text x="115" y="30" fill="#c084fc" font-size="12" font-weight="700" text-anchor="middle">💾 DynamoDB / ElastiCache</text>
+    <text x="15" y="58" fill="#f8fafc" font-size="10.5">• Sincronización de turnos</text>
+    <text x="15" y="76" fill="#f8fafc" font-size="10.5">• Estado de zombies e incidencias</text>
+    <text x="15" y="94" fill="#f8fafc" font-size="10.5">• Calles colapsadas en vivo</text>
+    <text x="15" y="112" fill="#94a3b8" font-size="9">Cero copia local en Lambda</text>
+  </g>
+
+  <!-- 5. CloudWatch Monitoring & Alerts -->
+  <g transform="translate(860, 500)">
+    <rect width="180" height="120" rx="10" fill="#1e293b" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="90" y="28" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">📊 Amazon CloudWatch</text>
+    <text x="12" y="54" fill="#f8fafc" font-size="10">• Métrica p95 POST /paso</text>
+    <text x="12" y="72" fill="#f8fafc" font-size="10">• Alarma &gt;450ms Latencia</text>
+    <text x="12" y="90" fill="#f8fafc" font-size="10">• Alarma Errores &gt;0.5%</text>
+    <text x="12" y="108" fill="#34d399" font-size="9.5" font-weight="600">Disponibilidad 100%</text>
+  </g>
+
+  <!-- 6. AWS Budgets Badge (Bottom Left inside Cloud) -->
+  <g transform="translate(260, 500)">
+    <rect width="240" height="120" rx="10" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="120" y="28" fill="#f87171" font-size="11" font-weight="700" text-anchor="middle">💰 AWS Budget Alert Activo</text>
+    <text x="15" y="55" fill="#f8fafc" font-size="10.5">• Presupuesto: $5.00 USD / mes</text>
+    <text x="15" y="75" fill="#f8fafc" font-size="10.5">• Alerta al 80% ($4.00) vía Email/SNS</text>
+    <text x="15" y="95" fill="#34d399" font-size="10.5" font-weight="600">• Gasto Hackathon: $0.00 USD</text>
+    <text x="15" y="112" fill="#94a3b8" font-size="9">100% en AWS Free Tier</text>
+  </g>
+
+</svg>

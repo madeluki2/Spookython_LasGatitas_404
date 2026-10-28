@@ -1,0 +1,78 @@
+<mxfile host="app.diagrams.net" modified="2026-10-27T22:00:00.000Z" agent="Mozilla/5.0" version="21.6.8" type="device">
+  <diagram id="escape-manta-aws-arch" name="Arquitectura AWS Escape Manta Zombie">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- AWS Cloud Boundary -->
+        <mxCell id="cloud" value="AWS Cloud (Region: us-east-1)" style="swimlane;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=#0b0f19;strokeColor=#00f2fe;fontColor=#ffffff;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="740" as="geometry" />
+        </mxCell>
+
+        <!-- Clients -->
+        <mxCell id="clients" value="Sobrevivientes &amp; Simulador&#xa;(Manta, Ecuador)" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#38bdf8;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="320" width="80" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway -->
+        <mxCell id="apigw" value="Amazon API Gateway&#xa;(HTTP API / WebSocket)&#xa;[Autenticación x-api-key]&#xa;&lt;50ms SSL Termination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232f3e;strokeColor=#f59e0b;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="80" y="270" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Route Engine App Runner / ECS -->
+        <mxCell id="compute" value="AWS App Runner / ECS Fargate&#xa;(Motor de Rutas Python FastAPI)&#xa;• Microsegundo A* Pathfinding&#xa;• Cero Cold Starts (&lt;3ms latencia)&#xa;• Detección de Colisiones &amp; Hordas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10b981;strokeColor=#ffffff;fontColor=#07090e;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="360" y="255" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- S3 & CloudFront -->
+        <mxCell id="s3_front" value="Amazon S3 + CloudFront&#xa;(Hosting Frontend Dashboard)&#xa;• Leaflet Map en Vivo&#xa;• Transmisión Radio 104.5 FM&#xa;• Inspector Telemétrico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3b82f6;strokeColor=#ffffff;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="360" y="80" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- State Store Redis / DynamoDB -->
+        <mxCell id="datastore" value="Amazon DynamoDB / ElastiCache&#xa;(Gestor de Estado del Mundo)&#xa;• Turnos y Posiciones Zombies&#xa;• Calles &amp; Puentes Bloqueados&#xa;• Balanceo Capacidad Refugios" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#8b5cf6;strokeColor=#ffffff;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="720" y="255" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- CloudWatch Monitoring -->
+        <mxCell id="monitoring" value="Amazon CloudWatch&#xa;• Métrica Latencia P95 POST /paso&#xa;• Alarma Disponibilidad &lt;99.5%&#xa;• Tasa de Supervivencia y Bajas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0284c7;strokeColor=#ffffff;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="360" y="470" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Budgets -->
+        <mxCell id="budget" value="AWS Budgets &amp; Cost Anomaly&#xa;• Límite: $5.00 USD / mes&#xa;• Alerta al 80% ($4.00) vía SNS&#xa;• Zero Surprise Billing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef4444;strokeColor=#ffffff;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="cloud">
+          <mxGeometry x="720" y="470" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00f2fe;strokeWidth=3;" edge="1" parent="1" source="clients" target="apigw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label1" value="POST /paso&#xa;x-api-key" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#00f2fe;fontStyle=1;" vertex="1" connectable="0" parent="edge1">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=3;" edge="1" parent="cloud" source="apigw" target="compute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c084fc;strokeWidth=2;" edge="1" parent="cloud" source="compute" target="datastore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label3" value="Get/Set Estado" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#c084fc;" vertex="1" connectable="0" parent="edge3">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38bdf8;strokeWidth=2;" edge="1" parent="cloud" source="compute" target="monitoring">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f43f5e;strokeWidth=2;" edge="1" parent="cloud" source="datastore" target="budget">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
