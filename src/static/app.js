@@ -21,8 +21,9 @@ let survivorsLayerGroup = null;
 let vansLayerGroup = null;
 let routePolylineLayer = null;
 
-// Street polylines index
-const streetLines = {}; // edge_id -> L.polyline
+// Street polylines and lookup indices
+const streetLines = {}; // edge_id -> { poly, u, v, edge, geom }
+const edgeByPair = {};  // "u:v" -> edge
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", async () => {
@@ -83,6 +84,9 @@ function renderGraphStreets(data) {
   data.nodos.forEach(n => { nodeMap[n.id] = n; });
 
   data.aristas.forEach(edge => {
+    edgeByPair[`${edge.origen}:${edge.destino}`] = edge;
+    edgeByPair[`${edge.destino}:${edge.origen}`] = edge;
+
     const u = nodeMap[edge.origen];
     const v = nodeMap[edge.destino];
     if (!u || !v) return;
@@ -106,7 +110,11 @@ function renderGraphStreets(data) {
       opacity = 0.5;
     }
 
-    const poly = L.polyline([[u.lat, u.lng], [v.lat, v.lng]], {
+    const geom = (edge.geometria && edge.geometria.length >= 2)
+      ? edge.geometria
+      : [[u.lat, u.lng], [v.lat, v.lng]];
+
+    const poly = L.polyline(geom, {
       color: color,
       weight: weight,
       opacity: opacity,
@@ -120,7 +128,7 @@ function renderGraphStreets(data) {
     });
 
     streetsLayerGroup.addLayer(poly);
-    streetLines[edge.id] = { poly, u, v, edge };
+    streetLines[edge.id] = { poly, u, v, edge, geom };
   });
 }
 
@@ -284,7 +292,13 @@ function updateBlockedStreets(blockedEdgeIds, nodeMap) {
     const item = streetLines[eid];
     if (!item) return;
 
-    const poly = L.polyline([[item.u.lat, item.u.lng], [item.v.lat, item.v.lng]], {
+    const geom = (item.geom && item.geom.length >= 2)
+      ? item.geom
+      : (item.edge && item.edge.geometria && item.edge.geometria.length >= 2)
+      ? item.edge.geometria
+      : [[item.u.lat, item.u.lng], [item.v.lat, item.v.lng]];
+
+    const poly = L.polyline(geom, {
       color: "#ef4444",
       weight: 6,
       opacity: 0.95,
@@ -430,32 +444,58 @@ function refreshInspector() {
   graphData.nodos.forEach(n => { nodeMap[n.id] = n; });
   const currNode = nodeMap[s.nodo];
 
-  // Draw Google Maps style GPS navigation polyline trail
+  // Draw Google Maps style GPS navigation polyline trail following exact asphalt road geometry
   routePolylineLayer.clearLayers();
   if (s.ruta_planificada && s.ruta_planificada.length > 1) {
-    const latlngs = s.ruta_planificada
-      .map(nid => nodeMap[nid])
-      .filter(Boolean)
-      .map(n => [n.lat, n.lng]);
+    const routeCoords = [];
+    for (let i = 0; i < s.ruta_planificada.length - 1; i++) {
+      const uId = s.ruta_planificada[i];
+      const vId = s.ruta_planificada[i + 1];
+      const edge = edgeByPair[`${uId}:${vId}`];
+      const uNode = nodeMap[uId];
+      const vNode = nodeMap[vId];
+      if (!uNode || !vNode) continue;
 
-    // Outer glow casing (Google Maps route border)
-    const polyBorder = L.polyline(latlngs, {
-      color: "#0369a1",
-      weight: 8,
-      opacity: 0.7,
-      lineCap: "round",
-      lineJoin: "round"
-    });
-    // Inner vibrant GPS route line
-    const polyLine = L.polyline(latlngs, {
-      color: "#00f2fe",
-      weight: 5,
-      opacity: 1.0,
-      lineCap: "round",
-      lineJoin: "round"
-    });
-    routePolylineLayer.addLayer(polyBorder);
-    routePolylineLayer.addLayer(polyLine);
+      if (edge && edge.geometria && edge.geometria.length >= 2) {
+        let segmentGeom = edge.geometria.slice();
+        // Check orientation of geometry
+        const dStartToU = Math.hypot(segmentGeom[0][0] - uNode.lat, segmentGeom[0][1] - uNode.lng);
+        const dEndToU = Math.hypot(segmentGeom[segmentGeom.length - 1][0] - uNode.lat, segmentGeom[segmentGeom.length - 1][1] - uNode.lng);
+        if (dEndToU < dStartToU) {
+          segmentGeom.reverse();
+        }
+
+        if (routeCoords.length > 0) {
+          routeCoords.push(...segmentGeom.slice(1));
+        } else {
+          routeCoords.push(...segmentGeom);
+        }
+      } else {
+        if (routeCoords.length === 0) routeCoords.push([uNode.lat, uNode.lng]);
+        routeCoords.push([vNode.lat, vNode.lng]);
+      }
+    }
+
+    if (routeCoords.length > 1) {
+      // Outer glow casing (Google Maps route border)
+      const polyBorder = L.polyline(routeCoords, {
+        color: "#0369a1",
+        weight: 8,
+        opacity: 0.75,
+        lineCap: "round",
+        lineJoin: "round"
+      });
+      // Inner vibrant GPS route line
+      const polyLine = L.polyline(routeCoords, {
+        color: "#00f2fe",
+        weight: 5,
+        opacity: 1.0,
+        lineCap: "round",
+        lineJoin: "round"
+      });
+      routePolylineLayer.addLayer(polyBorder);
+      routePolylineLayer.addLayer(polyLine);
+    }
   }
 
   container.innerHTML = `
