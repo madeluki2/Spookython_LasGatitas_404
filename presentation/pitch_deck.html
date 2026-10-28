@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pitch Deck | Escape de Manta Zombie - Spookython 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --card: #111827;
+      --cyan: #00f2fe;
+      --green: #10b981;
+      --gold: #fbbf24;
+      --red: #ef4444;
+      --purple: #c084fc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 100px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+    .slide-tag {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+    .highlight-cyan { color: var(--cyan); -webkit-text-fill-color: var(--cyan); }
+    .highlight-green { color: var(--green); -webkit-text-fill-color: var(--green); }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 24px;
+    }
+    .feature-card {
+      background: rgba(17, 24, 39, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .feature-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      color: var(--cyan);
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .metric-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .footer-slide {
+      position: absolute;
+      bottom: 24px;
+      left: 100px;
+      right: 100px;
+      display: flex;
+      justify-content: space-between;
+      color: #475569;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide 1: Cover -->
+  <section class="slide">
+    <div class="slide-tag">SPOOKYTHON 2026 · TRACK A</div>
+    <h1>ESCAPE DE MANTA <span class="highlight-cyan">ZOMBIE</span> 🧟</h1>
+    <p style="font-size: 1.3rem; color: #cbd5e1; max-width: 800px; margin-bottom: 30px;">
+      Motor de enrutamiento dinámico en tiempo real ante obstáculos móviles de alta concurrencia.
+    </p>
+    <div style="font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 1rem;">
+      Equipo: Las Gatitas 404 &nbsp;|&nbsp; ULEAM - Manabí &nbsp;|&nbsp; 28 Octubre 2026
+    </div>
+    <div class="footer-slide"><span>SLIDE 1 / 5</span><span>RADIO RESISTENCIA 104.5 FM</span></div>
+  </section>
+
+  <!-- Slide 2: Problem & Real World Impact -->
+  <section class="slide">
+    <div class="slide-tag">01 · PROBLEMÁTICA &amp; VALOR REAL</div>
+    <h2>El Reto: Enrutar cuando el <span class="highlight-cyan">mapa cambia en vivo</span></h2>
+    <div class="grid-2">
+      <div class="feature-card">
+        <h3>🚨 En la Ficción (31 de Octubre)</h3>
+        <p>Manta sitiada por zombies en Tarqui, Los Esteros, Barbasquillo y Jocay. 4 tipos de amenazas móviles (caminantes, corredores, hordas y dormidos) y calles que colapsan en tiempo real.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🌊 En la Realidad (Costa de Manabí)</h3>
+        <p>Es el núcleo de despacho de ambulancias del ECU-911, Uber y planes de evacuación masiva ante tsunamis: solo cambia "zombie" por "zona inundada" o "vía colapsada por sismo".</p>
+      </div>
+    </div>
+    <div class="footer-slide"><span>SLIDE 2 / 5</span><span>PROBLEMÁTICA &amp; IMPACTO</span></div>
+  </section>
+
+  <!-- Slide 3: Architecture & Technical Contract -->
+  <section class="slide">
+    <div class="slide-tag">02 · ARQUITECTURA &amp; REGLAS DEL JUEGO</div>
+    <h2>Respeto estricto del <span class="highlight-green">Contrato Técnico</span></h2>
+    <div class="grid-3">
+      <div class="feature-card">
+        <h3>🛡️ Evasión de Hordas</h3>
+        <p>Castigo severo al anti-patrón del jurado: Nuestro motor bloquea el nodo central <b>Y TODOS sus vecinos inmediatos</b>.</p>
+      </div>
+      <div class="feature-card">
+        <h3>⚡ Predicción de Corredores (PRO)</h3>
+        <p>Anticipa 2 saltos hacia adelante el vector de intercepción para evitar cruces frontales en la misma calle.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🏰 Balanceo de Refugios (PRO)</h3>
+        <p>Monitoreo de aforo dinámico para desviar flujos antes de saturar los 4 refugios fortificados.</p>
+      </div>
+    </div>
+    <div class="footer-slide"><span>SLIDE 3 / 5</span><span>INGENIERÍA &amp; ALGORITMOS</span></div>
+  </section>
+
+  <!-- Slide 4: Fire Test Metrics & AWS -->
+  <section class="slide">
+    <div class="slide-tag">03 · PRUEBA DE FUEGO &amp; MÉTRICAS AWS</div>
+    <h2>Rendimiento <span class="highlight-cyan">Calificación 10/10</span></h2>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="metric-badge">2.2 ms</div>
+        <h3>Latencia P95</h3>
+        <p>Rúbrica exige &le;150 ms para 10 puntos. Nuestro motor responde en <b>2.2 ms</b> (68 veces más rápido).</p>
+      </div>
+      <div class="feature-card">
+        <div class="metric-badge" style="color: var(--green);">100.0%</div>
+        <h3>Disponibilidad</h3>
+        <p>0 errores en 1000 peticiones bajo estrés en la Ronda 3 (200 sobrevivientes simultáneos).</p>
+      </div>
+      <div class="feature-card">
+        <div class="metric-badge" style="color: var(--purple);">$0.00</div>
+        <h3>Costo Hackathon</h3>
+        <p>100% cubierto en AWS Free Tier. Presupuesto AWS Budget activo a $5.00 con alerta al 80%.</p>
+      </div>
+    </div>
+    <div class="footer-slide"><span>SLIDE 4 / 5</span><span>PRUEBA DE FUEGO (TRACK A)</span></div>
+  </section>
+
+  <!-- Slide 5: Conclusion -->
+  <section class="slide">
+    <div class="slide-tag">04 · CONCLUSIÓN</div>
+    <h2>Manta está a salvo con <span class="highlight-cyan">Radio Resistencia</span></h2>
+    <p style="font-size: 1.2rem; color: #cbd5e1; max-width: 800px; margin-bottom: 24px;">
+      Demostración en vivo disponible en el puerto 8000 con mapa interactivo Leaflet, simulación en tiempo real y audio táctico sintetizado.
+    </p>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--green);">
+      ¡Muchas gracias! Preguntas del Jurado (3 minutos).
+    </div>
+    <div class="footer-slide"><span>SLIDE 5 / 5</span><span>GRACIAS JURADO ULEAM</span></div>
+  </section>
+
+</body>
+</html>
