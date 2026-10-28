@@ -402,6 +402,12 @@ body {
   background: #090d16;
 }
 
+/* OpenStreetMap Dark Mode Filter (Tema Noche Apocalíptica de Manta) */
+.leaflet-tile-pane {
+  filter: brightness(0.65) invert(1) contrast(2.2) hue-rotate(200deg) saturate(0.35);
+}
+
+
 /* Map Overlays */
 .map-legend-overlay {
   position: absolute;
