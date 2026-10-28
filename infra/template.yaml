@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Spookython 2026 Track A - Escape de Manta Zombie Routing Engine
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 512
+    Runtime: python3.11
+
+Resources:
+  # HTTP API Gateway with API Key and Low Latency
+  EscapeMantaHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: prod
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - x-api-key
+        AllowOrigins:
+          - '*'
+
+  # Pathfinding Function
+  EscapeMantaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Handler: src.api.server.app
+      Environment:
+        Variables:
+          SPOOKY_API_KEY: spooky-manta-key-2026
+      Events:
+        PostPaso:
+          Type: HttpApi
+          Properties:
+            Path: /paso
+            Method: POST
+            ApiId: !Ref EscapeMantaHttpApi
+        GetEstado:
+          Type: HttpApi
+          Properties:
+            Path: /estado
+            Method: GET
+            ApiId: !Ref EscapeMantaHttpApi
+        GetGrafo:
+          Type: HttpApi
+          Properties:
+            Path: /grafo
+            Method: GET
+            ApiId: !Ref EscapeMantaHttpApi
+
+Outputs:
+  ApiUrl:
+    Description: "URL pública del endpoint POST /paso en AWS"
+    Value: !Sub "https://${EscapeMantaHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/paso"

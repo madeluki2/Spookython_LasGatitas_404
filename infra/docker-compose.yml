@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  manta-zombie-engine:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    container_name: escape-manta-zombie-engine
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - SPOOKY_API_KEY=spooky-manta-key-2026
+    restart: unless-stopped
