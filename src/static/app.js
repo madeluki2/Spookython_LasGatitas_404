@@ -44,7 +44,8 @@ function initMap() {
     zoom: 14,
     minZoom: 12,
     maxZoom: 18,
-    zoomControl: true
+    zoomControl: true,
+    preferCanvas: true
   });
 
   // OpenStreetMap Open Tiles (100% libres y sin API Key requerida)
@@ -91,23 +92,23 @@ function renderGraphStreets(data) {
     const v = nodeMap[edge.destino];
     if (!u || !v) return;
 
-    // Google Maps style hierarchy: Avenidas, Calles, Puentes
-    let color = "#64748b";
-    let weight = 2.0;
-    let opacity = 0.65;
+    // Glowing Tactical Blue Street Network Hierarchy
+    let color = "#0284c7"; // Vibrant blue for all standard city streets (cuadras)
+    let weight = 2.2;
+    let opacity = 0.80;
 
     if (edge.tipo === "avenida") {
-      color = "#38bdf8";
-      weight = 3.5;
-      opacity = 0.9;
+      color = "#38bdf8"; // Electric cyan-blue for major arterial avenues
+      weight = 3.8;
+      opacity = 0.95;
     } else if (edge.tipo === "puente") {
-      color = "#f59e0b";
+      color = "#f59e0b"; // Amber warning for bridges & viaducts
       weight = 5.0;
       opacity = 0.95;
     } else if (edge.tipo === "callejon") {
-      color = "#475569";
-      weight = 1.4;
-      opacity = 0.5;
+      color = "#0369a1"; // Deep azure blue for secondary alleys
+      weight = 1.6;
+      opacity = 0.65;
     }
 
     const geom = (edge.geometria && edge.geometria.length >= 2)
